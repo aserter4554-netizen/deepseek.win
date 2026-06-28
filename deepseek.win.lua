@@ -497,6 +497,89 @@ if LocalPlayer.Character then
     task.wait(0.5)
     onCharacterAdded(LocalPlayer.Character)
 end
+-- ======== ЛЕВАЯ ВЕРХНЯЯ ПАНЕЛЬ (FPS + NICK + deepseek.win) ========
+-- ======== ЛЕВАЯ ВЕРХНЯЯ ПАНЕЛЬ (FPS + NICK + deepseek.win) ========
+task.wait(1)
+
+local topPanelGui = Instance.new("ScreenGui")
+topPanelGui.Name = "TopPanel"
+topPanelGui.ResetOnSpawn = false
+topPanelGui.IgnoreGuiInset = true
+topPanelGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+topPanelGui.DisplayOrder = 999
+topPanelGui.Parent = game:GetService("CoreGui")
+
+-- Чёрный овал (фон)
+local oval = Instance.new("Frame")
+oval.Size = UDim2.new(0, 400, 0, 40)
+oval.Position = UDim2.new(0, 10, 0, 60)  -- Сдвинуто на 50 пикселей вниз
+oval.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+oval.BackgroundTransparency = 0.7
+oval.BorderSizePixel = 0
+oval.ZIndex = 999
+oval.Parent = topPanelGui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(1, 0) -- Полный овал
+corner.Parent = oval
+
+-- Текст: FPS
+local fpsLabel = Instance.new("TextLabel")
+fpsLabel.Size = UDim2.new(0, 60, 1, 0)
+fpsLabel.Position = UDim2.new(0, 10, 0, 0)
+fpsLabel.BackgroundTransparency = 1
+fpsLabel.Text = "FPS: 0"
+fpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+fpsLabel.Font = Enum.Font.GothamBold
+fpsLabel.TextSize = 14
+fpsLabel.TextXAlignment = Enum.TextXAlignment.Left
+fpsLabel.ZIndex = 999
+fpsLabel.Parent = oval
+
+-- Текст: Ник в Roblox
+local nickLabel = Instance.new("TextLabel")
+nickLabel.Size = UDim2.new(0, 150, 1, 0)
+nickLabel.Position = UDim2.new(0, 80, 0, 0)
+nickLabel.BackgroundTransparency = 1
+nickLabel.Text = LocalPlayer.Name
+nickLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+nickLabel.Font = Enum.Font.GothamBold
+nickLabel.TextSize = 14
+nickLabel.TextXAlignment = Enum.TextXAlignment.Left
+nickLabel.ZIndex = 999
+nickLabel.Parent = oval
+
+-- Текст: deepseek.win (радужный)
+local watermarkLabel = Instance.new("TextLabel")
+watermarkLabel.Size = UDim2.new(0, 150, 1, 0)
+watermarkLabel.Position = UDim2.new(1, -160, 0, 0)
+watermarkLabel.BackgroundTransparency = 1
+watermarkLabel.Text = "deepseek.win"
+watermarkLabel.Font = Enum.Font.GothamBold
+watermarkLabel.TextSize = 14
+watermarkLabel.TextXAlignment = Enum.TextXAlignment.Right
+watermarkLabel.ZIndex = 999
+watermarkLabel.Parent = oval
+
+-- FPS счётчик
+local fps = 0
+local fpsUpdateTime = 0
+
+game:GetService("RunService").RenderStepped:Connect(function(deltaTime)
+    fpsUpdateTime = fpsUpdateTime + deltaTime
+    if fpsUpdateTime >= 0.5 then
+        fps = math.floor(1 / deltaTime)
+        fpsLabel.Text = "FPS: " .. tostring(fps)
+        fpsUpdateTime = 0
+    end
+end)
+
+-- Радужный эффект для deepseek.win
+local hue = 0
+game:GetService("RunService").RenderStepped:Connect(function()
+    hue = (hue + 0.5) % 360
+    watermarkLabel.TextColor3 = Color3.fromHSV(hue/360, 1, 1)
+end)
 
 Rayfield:Notify({
     Title = "deepseek.win v2.0",
