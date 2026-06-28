@@ -1,6 +1,6 @@
 --[[
     deepseek.win v2.0
-    Flight + Noclip + Speed + Gravity + Jump + Aimbot + ESP
+    Flight + Noclip + Speed + Gravity + Jump + Aimbot (Team Check) + ESP
 ]]
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
@@ -133,7 +133,7 @@ AimbotTab:CreateSlider({
     Flag = "AimbotSens",
     Callback = function(v) VisualSettings.AimbotSensitivity = v end
 })
-AimbotTab:CreateLabel("🎯 Target: Head (players only)")
+AimbotTab:CreateLabel("🎯 Target: Head (enemy only)")
 
 -- VISUALS TAB
 local VisualsTab = Window:CreateTab("👁️ Visuals", 4483362458)
@@ -421,14 +421,21 @@ local function isVisible(headPosition)
     return true
 end
 
--- ======== AIMBOT ========
+-- ======== AIMBOT (С TEAM CHECK) ========
 local function getClosestVisibleTarget()
     local closest = nil
     local shortestDistance = math.huge
     local mousePos = UserInputService:GetMouseLocation()
+    
+    local myTeam = LocalPlayer.Team
 
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character then
+            -- Team Check
+            if myTeam and player.Team and myTeam == player.Team then
+                continue -- пропускаем союзников
+            end
+
             local head = player.Character:FindFirstChild("Head")
             if head then
                 local headPos = head.Position
