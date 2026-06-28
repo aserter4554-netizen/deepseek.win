@@ -1,6 +1,6 @@
 --[[
     deepseek.win v2.0
-    Flight + Noclip + Speed + Gravity + Jump + Aimbot + ESP + Rainbow Cursor
+    Flight + Noclip + Speed + Gravity + Jump + Aimbot + ESP
 ]]
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
@@ -26,8 +26,7 @@ local MovementSettings = {
 local VisualSettings = {
     ESPEnabled = false,
     AimbotEnabled = false,
-    AimbotSensitivity = 0.2,
-    RainbowCursor = false
+    AimbotSensitivity = 0.2
 }
 
 -- ======== MENU ========
@@ -147,84 +146,6 @@ VisualsTab:CreateToggle({
         if not v then clearESP() end
     end
 })
-VisualsTab:CreateToggle({
-    Name = "Rainbow Cursor",
-    CurrentValue = false,
-    Flag = "RainbowCursor",
-    Callback = function(v) VisualSettings.RainbowCursor = v end
-})
-
--- ======== RAINBOW CURSOR ========
-task.wait(0.1)
-local cursorGui = Instance.new("ScreenGui")
-cursorGui.Name = "RainbowCursorGui"
-cursorGui.ResetOnSpawn = false
-cursorGui.IgnoreGuiInset = true
-cursorGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-cursorGui.DisplayOrder = 1000
-cursorGui.Parent = game:GetService("CoreGui")
-
-local cursorContainer = Instance.new("Frame")
-cursorContainer.Size = UDim2.new(0, 0, 0, 0)
-cursorContainer.BackgroundTransparency = 1
-cursorContainer.Position = UDim2.new(0, 0, 0, 0)
-cursorContainer.ZIndex = 999
-cursorContainer.Parent = cursorGui
-
-local dot = Instance.new("Frame")
-dot.Size = UDim2.new(0, 10, 0, 10)
-dot.Position = UDim2.new(0.5, -5, 0.5, -5)
-dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-dot.BackgroundTransparency = 0
-dot.BorderSizePixel = 0
-dot.ZIndex = 999
-dot.Parent = cursorContainer
-
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(1, 0)
-corner.Parent = dot
-
-local cursorLabel = Instance.new("TextLabel")
-cursorLabel.Size = UDim2.new(0, 200, 0, 30)
-cursorLabel.Position = UDim2.new(0.5, -100, 0.5, 16)
-cursorLabel.BackgroundTransparency = 1
-cursorLabel.Text = "deepseek.win"
-cursorLabel.TextScaled = true
-cursorLabel.Font = Enum.Font.GothamBlack
-cursorLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-cursorLabel.ZIndex = 999
-cursorLabel.Parent = cursorContainer
-
-UserInputService.MouseIconEnabled = false
-
-local function updateCursorPosition()
-    local mousePos = UserInputService:GetMouseLocation()
-    cursorContainer.Position = UDim2.new(0, mousePos.X, 0, mousePos.Y)
-end
-
-UserInputService.InputChanged:Connect(function(input, gp)
-    if gp then return end
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        updateCursorPosition()
-    end
-end)
-
-RunService.RenderStepped:Connect(updateCursorPosition)
-
-local hue = 0
-RunService.RenderStepped:Connect(function()
-    if VisualSettings.RainbowCursor then
-        hue = (hue + 0.5) % 360
-        local color = Color3.fromHSV(hue/360, 1, 1)
-        cursorLabel.TextColor3 = color
-        dot.BackgroundColor3 = color
-        cursorLabel.Rotation = (cursorLabel.Rotation + 2) % 360
-    else
-        cursorLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        cursorLabel.Rotation = 0
-    end
-end)
 
 -- ======== FLIGHT ========
 local flightActive = false
