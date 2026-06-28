@@ -44,13 +44,16 @@ local Window = Rayfield:CreateWindow({
 })
 
 -- MOVEMENT TAB
+-- ======== ВКЛАДКА MOVEMENT (С ПОЛЗУНКОМ СКОРОСТИ ПОЛЁТА) ========
 local MovementTab = Window:CreateTab("🏃 Movement", 4483362458)
+
 MovementTab:CreateToggle({
     Name = "Flight (E)",
     CurrentValue = false,
     Flag = "Flight",
     Callback = function(v) MovementSettings.FlightEnabled = v end
 })
+
 MovementTab:CreateToggle({
     Name = "Noclip (N)",
     CurrentValue = false,
@@ -67,6 +70,19 @@ MovementTab:CreateToggle({
         end
     end
 })
+
+MovementTab:CreateSlider({
+    Name = "Flight Speed",
+    Range = {10, 150},
+    Increment = 1,
+    Suffix = "",
+    CurrentValue = 50,
+    Flag = "FlightSpeed",
+    Callback = function(v)
+        MovementSettings.FlightSpeed = v
+    end
+})
+
 MovementTab:CreateSlider({
     Name = "Speed",
     Range = {16, 100},
@@ -85,6 +101,7 @@ MovementTab:CreateSlider({
         end
     end
 })
+
 MovementTab:CreateSlider({
     Name = "Gravity",
     Range = {0, 196},
@@ -97,6 +114,7 @@ MovementTab:CreateSlider({
         workspace.Gravity = v
     end
 })
+
 MovementTab:CreateSlider({
     Name = "Jump Power",
     Range = {50, 150},
