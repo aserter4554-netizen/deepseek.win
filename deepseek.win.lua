@@ -45,6 +45,7 @@ local Window = Rayfield:CreateWindow({
 
 -- MOVEMENT TAB
 -- ======== ВКЛАДКА MOVEMENT (С ПОЛЗУНКОМ СКОРОСТИ ПОЛЁТА) ========
+-- ======== ВКЛАДКА MOVEMENT (С РАБОЧИМ ПОЛЗУНКОМ СКОРОСТИ ПОЛЁТА) ========
 local MovementTab = Window:CreateTab("🏃 Movement", 4483362458)
 
 MovementTab:CreateToggle({
@@ -133,7 +134,6 @@ MovementTab:CreateSlider({
         end
     end
 })
-
 -- AIMBOT TAB
 local AimbotTab = Window:CreateTab("🎯 Aimbot", 4483362458)
 AimbotTab:CreateToggle({
