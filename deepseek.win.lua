@@ -486,7 +486,6 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
-
 -- ======== VISIBILITY CHECK ========
 local function isVisible(headPosition)
     local cameraPos = Camera.CFrame.Position
