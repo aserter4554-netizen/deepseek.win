@@ -135,24 +135,76 @@ MovementTab:CreateSlider({
     end
 })
 -- AIMBOT TAB
-local AimbotTab = Window:CreateTab("🎯 Aimbot", 4483362458)
-AimbotTab:CreateToggle({
-    Name = "Enable Aimbot (Toggle: X)",
-    CurrentValue = false,
-    Flag = "AimbotToggle",
-    Callback = function(v) VisualSettings.AimbotEnabled = v end
-})
-AimbotTab:CreateSlider({
-    Name = "Sensitivity",
-    Range = {0, 1},
-    Increment = 0.05,
-    Suffix = "x",
-    CurrentValue = 0.2,
-    Flag = "AimbotSens",
-    Callback = function(v) VisualSettings.AimbotSensitivity = v end
-})
-AimbotTab:CreateLabel("🎯 Target: Head (enemy only)")
+-- ======== AIMBOT (ARSENAL, С TEAM CHECK И ПРОВЕРКОЙ ВИДИМОСТИ) ========
+local function isTargetVisible(targetHead)
+    local cameraPos = Camera.CFrame.Position
+    local direction = (targetHead - cameraPos).Unit
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+    raycastParams.FilterDescendantsInstances = {LocalPlayer.Character, Camera}
 
+    local result = workspace:Raycast(cameraPos, direction * 1000, raycastParams)
+
+    if result then
+        local hit = result.Instance
+        if hit and hit:IsDescendantOf(LocalPlayer.Character) == false then
+            local character = hit:FindFirstAncestorOfClass("Model")
+            if character and character:FindFirstChildWhichIsA("Humanoid") then
+                return true
+            end
+        end
+        return false
+    end
+    return true
+end
+
+local function getClosestVisibleTarget()
+    local closest = nil
+    local shortestDistance = math.huge
+    local mousePos = UserInputService:GetMouseLocation()
+    local myTeam = LocalPlayer.Team
+
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            -- Team Check
+            if VisualSettings.TeamCheck then
+                if myTeam and player.Team and myTeam == player.Team then
+                    continue
+                end
+            end
+
+            local head = player.Character:FindFirstChild("Head")
+            if head then
+                local headPos = head.Position
+                if isTargetVisible(headPos) then
+                    local pos, onScreen = Camera:WorldToScreenPoint(headPos)
+                    if onScreen then
+                        local distance = (Vector2.new(pos.X, pos.Y) - mousePos).Magnitude
+                        if distance < shortestDistance then
+                            shortestDistance = distance
+                            closest = player
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return closest
+end
+
+RunService.RenderStepped:Connect(function()
+    if VisualSettings.AimbotEnabled then
+        local target = getClosestVisibleTarget()
+        if target and target.Character then
+            local head = target.Character:FindFirstChild("Head")
+            if head then
+                local targetPos = head.Position
+                local lookAt = CFrame.new(Camera.CFrame.Position, targetPos)
+                Camera.CFrame = Camera.CFrame:Lerp(lookAt, VisualSettings.AimbotSensitivity)
+            end
+        end
+    end
+end)
 -- VISUALS TAB
 local VisualsTab = Window:CreateTab("👁️ Visuals", 4483362458)
 VisualsTab:CreateToggle({
